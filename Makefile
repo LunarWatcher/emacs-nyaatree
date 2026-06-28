@@ -5,11 +5,11 @@ ERT_URL=http://git.savannah.gnu.org/cgit/emacs.git/plain/lisp/emacs-lisp/ert.el?
 .PHONY: ert test test-batch
 
 package: *.el
-	@ver=`grep -o "Version: .*" neotree.el | cut -c 10-`; \
-	tar cjvf neotree-$$ver.tar.bz2 --mode 644 `git ls-files '*.el' | xargs`
+	@ver=`grep -o "Version: .*" nyaatree.el | cut -c 10-`; \
+	tar cjvf nyaatree-$$ver.tar.bz2 --mode 644 `git ls-files '*.el' | xargs`
 
 clean:
-	@rm -rf neotree-*/ neotree-*.tar neotree-*.tar.bz2 *.elc ert.el
+	@rm -rf nyaatree-*/ nyaatree-*.tar nyaatree-*.tar.bz2 *.elc ert.el
 
 test: compile
 	${EMACS} -Q -nw -L . -L ./test \
@@ -29,4 +29,4 @@ downloads:
 	${CURL} ${ERT_URL} > ert.el
 
 compile:
-	${EMACS} -Q --batch -L . -f batch-byte-compile neotree.el
+	${EMACS} -Q --batch -L . -f batch-byte-compile nyaatree.el

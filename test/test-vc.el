@@ -1,9 +1,10 @@
 ;;; test-vc.el --- test cases
 
 ;; Copyright (C) 2014 jaypei
+;; Copyright (C) 2026 Olivia
 
-;; Author: jaypei <jaypei97159@gmail.com>
-;; URL: https://github.com/jaypei/emacs-neotree
+;; Maintainer: Olivia <oliviawolfie@pm.me>
+;; URL: https://codeberg.org/LunarWatcher/emacs-nyaatree
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,23 +23,23 @@
 
 ;;; Code:
 
-(require 'neotree)
-(require 'neotree-test)
+(require 'nyaatree)
+(require 'nyaatree-test)
 
-(neo-test--try-open
- neo-test-vc-mode-with-face
+(nyaatree-test--try-open
+ nyaatree-test-vc-mode-with-face
  (shell-command-to-string "git init")
- (setq neo-vc-integration '(face)))
+ (setq nyaatree-vc-integration '(face)))
 
-(neo-test--try-open
- neo-test-vc-mode-with-char
+(nyaatree-test--try-open
+ nyaatree-test-vc-mode-with-char
  (shell-command-to-string "git init")
- (setq neo-vc-integration '(char)))
+ (setq nyaatree-vc-integration '(char)))
 
-(neo-test--try-open
- neo-test-vc-mode-with-char-face
+(nyaatree-test--try-open
+ nyaatree-test-vc-mode-with-char-face
  (shell-command-to-string "git init")
- (setq neo-vc-integration '(char face)))
+ (setq nyaatree-vc-integration '(char face)))
 
 
 ;;; test-vc.el ends here

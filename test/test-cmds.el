@@ -1,9 +1,10 @@
 ;;; test-cmds.el --- test cases
 
 ;; Copyright (C) 2014 jaypei
+;; Copyright (C) 2026 Olivia
 
-;; Author: jaypei <jaypei97159@gmail.com>
-;; URL: https://github.com/jaypei/emacs-neotree
+;; Maintainer: Olivia <oliviawolfie@pm.me>
+;; URL: https://codeberg.org/LunarWatcher/emacs-nyaatree
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,36 +23,36 @@
 
 ;;; Code:
 
-(require 'neotree)
-(require 'neotree-test)
+(require 'nyaatree)
+(require 'nyaatree-test)
 
 
-(ert-deftest neo-test-neotree-startup ()
-  (neotree)
-  (should (neo-global--window-exists-p)))
+(ert-deftest nyaatree-test-nyaatree-startup ()
+  (nyaatree)
+  (should (nyaatree-global--window-exists-p)))
 
-(ert-deftest neo-test-neotree-toggle ()
-  (neotree-toggle)
-  (should (neo-global--window-exists-p))
-  (neotree-show)
-  (should (neo-global--window-exists-p))
-  (neotree-toggle)
-  (should (not (neo-global--window-exists-p)))
-  (neotree-hide)
-  (should (not (neo-global--window-exists-p)))
-  (neotree-show)
-  (should (neo-global--window-exists-p)))
+(ert-deftest nyaatree-test-nyaatree-toggle ()
+  (nyaatree-toggle)
+  (should (nyaatree-global--window-exists-p))
+  (nyaatree-show)
+  (should (nyaatree-global--window-exists-p))
+  (nyaatree-toggle)
+  (should (not (nyaatree-global--window-exists-p)))
+  (nyaatree-hide)
+  (should (not (nyaatree-global--window-exists-p)))
+  (nyaatree-show)
+  (should (nyaatree-global--window-exists-p)))
 
-(ert-deftest neo-test-neotree-dir ()
-  (neo-test--with-temp-dir
-   (neotree-dir temp-cwd)
-   (neo-global--with-buffer
-    (should (string-equal neo-buffer--start-node temp-cwd)))
-   (neotree-toggle)
-   (neo-global--with-buffer
-    (should (string-equal neo-buffer--start-node temp-cwd)))
-   (neotree-toggle)
-   (neo-global--with-buffer
-    (should (string-equal neo-buffer--start-node temp-cwd)))))
+(ert-deftest nyaatree-test-nyaatree-dir ()
+  (nyaatree-test--with-temp-dir
+   (nyaatree-dir temp-cwd)
+   (nyaatree-global--with-buffer
+    (should (string-equal nyaatree-buffer--start-node temp-cwd)))
+   (nyaatree-toggle)
+   (nyaatree-global--with-buffer
+    (should (string-equal nyaatree-buffer--start-node temp-cwd)))
+   (nyaatree-toggle)
+   (nyaatree-global--with-buffer
+    (should (string-equal nyaatree-buffer--start-node temp-cwd)))))
 
 ;;; test-cmds.el ends here

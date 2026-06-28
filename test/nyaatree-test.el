@@ -1,9 +1,10 @@
-;;; neotree-test.el --- test utilities
+;;; nyaatree-test.el --- test utilities
 
 ;; Copyright (C) 2014 jaypei
+;; Copyright (C) 2026 Olivia
 
-;; Author: jaypei <jaypei97159@gmail.com>
-;; URL: https://github.com/jaypei/emacs-neotree
+;; Maintainer: Olivia <oliviawolfie@pm.me>
+;; URL: https://codeberg.org/LunarWatcher/emacs-nyaatree
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,26 +23,26 @@
 
 ;;; Code:
 
-(defmacro neo-test--with-temp-dir (&rest body)
+(defmacro nyaatree-test--with-temp-dir (&rest body)
   (declare (indent 0) (debug t))
   `(let* ((temp-cwd (file-name-as-directory (make-temp-file "dir" t)))
-          (temp-pd (neo-path--join temp-cwd "neo-test" "./")))
+          (temp-pd (nyaatree-path--join temp-cwd "nyaatree-test" "./")))
      (mkdir temp-pd)
      (unwind-protect
          (let ((default-directory temp-cwd)) ,@body)
        (delete-directory temp-cwd t))))
 
-(defun neo-test--with-temp-dir-open ()
-  (neo-test--with-temp-dir
+(defun nyaatree-test--with-temp-dir-open ()
+  (nyaatree-test--with-temp-dir
     (write-region "" nil "file-1")
     (write-region "hello" nil "file-2")
-    (neotree-dir temp-cwd)))
+    (nyaatree-dir temp-cwd)))
 
-(defmacro neo-test--try-open (name &rest body)
+(defmacro nyaatree-test--try-open (name &rest body)
   (declare (indent 0) (debug t))
   `(ert-deftest ,name ()
      ,@body
-     (neo-test--with-temp-dir-open)))
+     (nyaatree-test--with-temp-dir-open)))
 
-(provide 'neotree-test)
-;;; neotree-test.el ends here
+(provide 'nyaatree-test)
+;;; nyaatree-test.el ends here

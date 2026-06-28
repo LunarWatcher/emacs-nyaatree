@@ -1,9 +1,10 @@
 ;;; test-utils.el --- test cases
 
 ;; Copyright (C) 2014 jaypei
+;; Copyright (C) 2026 Olivia
 
-;; Author: jaypei <jaypei97159@gmail.com>
-;; URL: https://github.com/jaypei/emacs-neotree
+;; Maintainer: Olivia <oliviawolfie@pm.me>
+;; URL: https://codeberg.org/LunarWatcher/emacs-nyaatree
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,13 +23,13 @@
 
 ;;; Code:
 
-(require 'neotree)
-(require 'neotree-test)
+(require 'nyaatree)
+(require 'nyaatree-test)
 
 
-(ert-deftest neo-test-filter ()
+(ert-deftest nyaatree-test-filter ()
   (let ((should-equal (lambda (condp lst y)
-                        (should (equal (neo-util--filter condp lst) y)))))
+                        (should (equal (nyaatree-util--filter condp lst) y)))))
     (apply should-equal (list (lambda (x) (> x 10))
                               '(1 2 8 12 30)
                               '(12 30)))
@@ -49,26 +50,26 @@
                               '(30)))
     (apply should-equal (list (lambda (x) (and (not (string= x "."))
                                                (not (string= x ".."))))
-                              '("." ".." ".neotree/" "otherfiles")
-                              '(".neotree/" "otherfiles")))))
+                              '("." ".." ".nyaatree/" "otherfiles")
+                              '(".nyaatree/" "otherfiles")))))
 
 
-(ert-deftest neo-test-find ()
+(ert-deftest nyaatree-test-find ()
   (let ((should-equal (lambda (where which y)
-                        (should (equal (neo-util--find where which) y)))))
+                        (should (equal (nyaatree-util--find where which) y)))))
     (apply should-equal (list '("hello" 1 "world") 'integerp 1))
     (apply should-equal (list '("hello" 1 "world") 'stringp "hello"))
     (apply should-equal (list '("hello" "world" 100000) 'integerp 100000))))
 
 
-(ert-deftest neo-test-newline-and-begin ()
+(ert-deftest nyaatree-test-newline-and-begin ()
   (with-temp-buffer
-    (neo-buffer--newline-and-begin)))
+    (nyaatree-buffer--newline-and-begin)))
 
 
-(ert-deftest neo-test-file-short-name ()
+(ert-deftest nyaatree-test-file-short-name ()
   (let ((should-equal (lambda (x y)
-                        (should (string= (neo-path--file-short-name x) y)))))
+                        (should (string= (nyaatree-path--file-short-name x) y)))))
     (apply should-equal '("~/" "~"))
     (apply should-equal '("/" "/"))
     (apply should-equal '("~/." "."))
@@ -80,27 +81,27 @@
     (apply should-equal '("/home/q/hello/world/.abc" ".abc"))))
 
 
-(ert-deftest neo-test-insert-with-face ()
+(ert-deftest nyaatree-test-insert-with-face ()
   (with-temp-buffer
     (insert "foo")
-    (neo-buffer--insert-with-face "ButtonContent" 'default)
+    (nyaatree-buffer--insert-with-face "ButtonContent" 'default)
     (insert "bar")
     (goto-char 4)
     (should (eq (face-at-point) 'default))
     (should (string= (buffer-string) "fooButtonContentbar"))))
 
-(ert-deftest neo-test-strip-path ()
+(ert-deftest nyaatree-test-strip-path ()
   (setq cases '((" /" . "/")
                 ("\n/" . "/")
                 ("\n \t/" . "/")
                 ("\n \t~/abc.org " . "~/abc.org")))
   (mapc
-   (lambda (x) (should (equal (neo-path--strip (car x))
+   (lambda (x) (should (equal (nyaatree-path--strip (car x))
                               (cdr x))))
    cases))
 
-(ert-deftest neo-test-file-equal-p ()
-  (let ((fn 'neo-path--file-equal-p)
+(ert-deftest nyaatree-test-file-equal-p ()
+  (let ((fn 'nyaatree-path--file-equal-p)
         (cases '((("/etc/passwd" "/etc/passwd") . t)
                  (("/tmp/no-exists-file" "/tmp/no-exists-file") . nil)
                  ((nil "/etc/passwd") . nil)
