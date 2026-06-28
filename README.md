@@ -13,6 +13,7 @@ Note that this section does not replace the changelog. This is meant as a summar
 * All `neo-`/`neotree-`-prefixes can be replaced with `nyaatree` (meow)
   * `neotree` -> `nyaatree`, including in all commands.
   * `neo` -> `nyaatree`, including in all variables.
+  * **This affects themes**. I do not currently know how to alias `nyaatree-*-face` to `neo-*-face` by default
 
 ## Screenshots
 

@@ -1591,12 +1591,12 @@ If there is no button in current line, then return DEFAULT."
     (unless (null current-path)
       (setq msg (format "Rename [%s] to: " (nyaatree-path--file-short-name current-path)))
       (setq to-path (read-file-name msg (file-name-directory current-path)))
-      (if buffer
-          (with-current-buffer buffer
-            (set-visited-file-name to-path nil t)))
       (if (vc-registered current-path)
           (vc-rename-file current-path to-path)
           (rename-file current-path to-path 1))
+      (if buffer
+          (with-current-buffer buffer
+            (set-visited-file-name to-path nil t)))
       (nyaatree-buffer--refresh t)
       (message "Rename successful."))))
 

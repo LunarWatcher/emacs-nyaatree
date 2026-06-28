@@ -1,6 +1,14 @@
 # Changelog
 ## [v1.0.0]
 
+### Changed
+
+* The `neo` prefix is now `nyaatree`
+* The `neotree` prefix is now `nyatree`
+
+### Fixed
+
+* `nyaatree-rename` will no longer fail in version-controlled folders when the buffer being renamed is opened.
 
 ## v0.6.0
 
