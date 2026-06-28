@@ -6,7 +6,7 @@
 ;; Maintainer: Olivia <oliviawolfie@pm.me>
 ;; URL: https://codeberg.org/LunarWatcher/emacs-nyaatree
 ;; Version: 1.0.0
-;; Package-Requires: ((cl-lib "0.5"))
+;; Package-Requires: ((cl-lib "0.5"), (emacs "29.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -40,28 +40,6 @@
                       default-directory)))
 
 (defconst nyaatree-header-height 5)
-
-(eval-and-compile
-
-  ;; Added in Emacs 24.3
-  (unless (fboundp 'user-error)
-    (defalias 'user-error 'error))
-
-  ;; Added in Emacs 24.3 (mirrors/emacs@b335efc3).
-  (unless (fboundp 'setq-local)
-    (defmacro setq-local (var val)
-      "Set variable VAR to value VAL in current buffer."
-      (list 'set (list 'make-local-variable (list 'quote var)) val)))
-
-  ;; Added in Emacs 24.3 (mirrors/emacs@b335efc3).
-  (unless (fboundp 'defvar-local)
-    (defmacro defvar-local (var val &optional docstring)
-      "Define VAR as a buffer-local variable with default value VAL.
-Like `defvar' but additionally marks the variable as being automatically
-buffer-local wherever it is set."
-      (declare (debug defvar) (doc-string 3))
-      (list 'progn (list 'defvar var val docstring)
-            (list 'make-variable-buffer-local (list 'quote var))))))
 
 ;; Add autoload function for vc (#153).
 (autoload 'vc-responsible-backend "vc.elc")
