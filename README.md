@@ -1,58 +1,31 @@
-# emacs-neotree
+# emacs-nyaatree
 
-A Emacs tree plugin like NerdTree for Vim.
+A Emacs tree plugin like NerdTree for Vim. A fork of the seemingly unmaintained [emacs-neotree](https://github.com/jaypei/emacs-neotree)
 
-[![Build Status](https://travis-ci.org/jaypei/emacs-neotree.svg?branch=master)](https://travis-ci.org/jaypei/emacs-neotree)
-[![MELPA Stable](http://stable.melpa.org/packages/neotree-badge.svg)](http://stable.melpa.org/#/neotree)
-[![MELPA](https://melpa.org/packages/neotree-badge.svg)](https://melpa.org/#/neotree)
+## Fork notes
 
+emacs-nyaatree is considered feature-complete at this time. The upstream version is _fine_, but this fork was spawned due to a bug where files _refuse_ to be renamed if I have a buffer of that file open, but only under certain circumstances. This pissed me off to the point where I figured maintaining an old elisp plugin was a good idea.
+
+### Fork changes
+
+Note that this section does not replace the changelog. This is meant as a summary for migration purposes, and only highlights changes that are incompatible with upstream.
+
+* All `neo-`/`neotree-`-prefixes can be replaced with `nyaatree` (meow)
+  * `neotree` -> `nyaatree`, including in all commands.
+  * `neo` -> `nyaatree`, including in all variables.
 
 ## Screenshots
 
-![NeoTree-1](https://raw.githubusercontent.com/wiki/jaypei/emacs-neotree/imgs/neotree-1.png)  
+TODO (but nothing major about the style has changed relative to upstream)
 
 ## Installation
 
-### Melpa
-
-You can install the plugin using the packages on [melpa](http://melpa.org/).
-
-Make sure you have something like the following in your Emacs startup file (`~/.emacs.d/init.el`, or `~/.emacs`):
-
 ```elisp
-    (add-to-list 'package-archives
-                 '("melpa" . "http://melpa.org/packages/"))
-```
-
-To make that take effect, either evaluate that elisp expression or restart Emacs.
-
-Then use `M-x package-list-packages`, select `neotree` from
-the list by pressing `i`, then press `x` to execute the changes. At
-that point, the package will be installed.
-
-
-### Source
-
-Clone project:
-```sh
-$ cd /some/path
-$ git clone https://github.com/jaypei/emacs-neotree.git neotree
-$ cd neotree
-$ git checkout dev
-```
-
-Add config to emacs:
-
-```elisp
-(add-to-list 'load-path "/some/path/neotree")
-(require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
-```
-
-Open (toggle) NeoTree:
-
-```
-<F8>
+(use-package nyaatree
+  :vc (:url "https://codeberg.org/LunarWatcher/emacs-nyaatree.git"
+            :rev :newest)
+  :ensure t
+)
 ```
 
 ## Keybindings
@@ -84,23 +57,19 @@ NeoTree provides following themes:
 - *nerd-icons*[^2]
 - *nerd*
 
-Theme can be configed by setting **neo-theme**. For example, use *icons* for window 
+Theme can be configed by setting **nyaatree-theme**. For example, use *icons* for window
 system and *arrow* terminal.
 
 ```elisp
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(setq nyaatree-theme (if (display-graphic-p) 'icons 'arrow))
 ```
 
 
-* all-the-icons theme screenshots  
+* all-the-icons theme screenshots
+
 ![](screenshots/icons.png "neotree icons theme")
 
 ## More documentation
-
-EmacsWiki:
-[En](http://www.emacswiki.org/emacs/NeoTree)
-[中文版](http://www.emacswiki.org/emacs/NeoTree_%E4%B8%AD%E6%96%87wiki)
-
 
 [^1]: For users who want to use the `icons` theme. Please make sure you have installed the
 [all-the-icons](https://github.com/domtronn/all-the-icons.el) package and its

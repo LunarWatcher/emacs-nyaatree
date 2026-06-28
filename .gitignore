@@ -4,4 +4,4 @@ ert.el
 *.tar
 *~
 \#*
-neotree-autoloads.el
+nyaatree-autoloads.el
