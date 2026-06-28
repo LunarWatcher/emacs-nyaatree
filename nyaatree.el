@@ -1198,18 +1198,21 @@ Return nil if DIR is not an existing directory."
 (defun nyaatree-get-unsaved-buffers-from-projectile ()
   "Return list of unsaved buffers from projectile buffers."
   (interactive)
-  (let ((rlist '())
-        (rtag t))
-    (condition-case nil
-        (projectile-project-buffers)
-      (error (setq rtag nil)))
-    (when (and rtag (fboundp 'projectile-project-buffers))
-      (dolist (buf (projectile-project-buffers))
-        (with-current-buffer buf
-          (if (and (buffer-modified-p) buffer-file-name)
-              (setq rlist (cons (buffer-file-name) rlist))
-            ))))
-    rlist))
+  (if (fboundp 'projectile-project-buffers)
+      (let ((rlist '())
+            (rtag t))
+        (condition-case nil
+            (projectile-project-buffers)
+          (error (setq rtag nil)))
+        (when rtag
+          (dolist (buf (projectile-project-buffers))
+            (with-current-buffer buf
+              (if (and (buffer-modified-p) buffer-file-name)
+                  (setq rlist (cons (buffer-file-name) rlist))
+                ))))
+        rlist))
+  (error "Projectile not installed")
+  )
 
 ;;
 ;; Buffer methods
@@ -1229,11 +1232,35 @@ Return nil if DIR is not an existing directory."
                  'xpm nil :ascent 'center :mask '(heuristic t)))
     image))
 
+(defun nyaatree--all-the-icons-icon-for-dir-with-chevron (dir &optional chevron)
+  "Note: I have not tested that this function doesn't break all-the-icons"
+  (if (fboundp 'all-the-icons-icon-for-dir-with-chevron)
+      (all-the-icons-icon-for-dir-with-chevron dir chevron)
+    (error "all-the-icons-icons is not installed")
+    )
+  )
+(defun nyaatree--all-the-icons-icon-for-file (name)
+  (if (fboundp 'all-the-icons-icon-for-file)
+      (all-the-icons-icon-for-file name)
+    (error "all-the-icons is not installed.")
+    )
+  )
+
 (defun nyaatree--nerd-icons-icon-for-dir-with-chevron (dir &optional chevron padding)
-  (let ((icon (nerd-icons-icon-for-dir dir))
-        (chevron (if chevron (nerd-icons-octicon (format "nf-oct-chevron_%s" chevron) :height 0.8 :v-adjust -0.1) ""))
-        (padding (or padding "\t")))
-    (format "%s%s%s%s%s" padding chevron padding icon padding)))
+  (if (and (fboundp 'nerd-icons-icon-for-dir) (fboundp 'nerd-icons-octicon))
+      (let ((icon (nerd-icons-icon-for-dir dir))
+            (chevron (if chevron (nerd-icons-octicon (format "nf-oct-chevron_%s" chevron) :height 0.8 :v-adjust -0.1) ""))
+            (padding (or padding "\t")))
+        (format "%s%s%s%s%s" padding chevron padding icon padding))
+    (error "nerd-icons is not installed")
+    )
+  )
+(defun nyaatree--nerd-icons-icon-for-file (name)
+  (if (fboundp 'nerd-icons-icon-for-file)
+      (nerd-icons-icon-for-file name)
+    (error "nerd-icons is not installed")
+    )
+  )
 
 (defun nyaatree-buffer--insert-fold-symbol (name &optional node-name)
   "Write icon by NAME, the icon style affected by nyaatree-theme.
@@ -1262,16 +1289,16 @@ Optional NODE-NAME is used for the `icons' theme"
       (unless (require 'all-the-icons nil 'noerror)
         (error "Package `all-the-icons' isn't installed"))
       (setq-local tab-width 1)
-      (or (and (equal name 'open)  (insert (all-the-icons-icon-for-dir-with-chevron (directory-file-name node-name) "down")))
-          (and (equal name 'close) (insert (all-the-icons-icon-for-dir-with-chevron (directory-file-name node-name) "right")))
-          (and (equal name 'leaf)  (insert (format "\t\t\t%s\t" (all-the-icons-icon-for-file node-name))))))
+      (or (and (equal name 'open)  (insert (nyaatree--all-the-icons-icon-for-dir-with-chevron (directory-file-name node-name) "down")))
+          (and (equal name 'close) (insert (nyaatree--all-the-icons-icon-for-dir-with-chevron (directory-file-name node-name) "right")))
+          (and (equal name 'leaf)  (insert (format "\t\t\t%s\t" (nyaatree--all-the-icons-icon-for-file node-name))))))
      ((equal nyaatree-theme 'nerd-icons)
       (unless (require 'nerd-icons nil 'noerror)
         (error "Package `nerd-icons' isn't installed"))
       (setq-local tab-width 1)
       (or (and (equal name 'open)  (insert (nyaatree--nerd-icons-icon-for-dir-with-chevron (directory-file-name node-name) "down")))
           (and (equal name 'close) (insert (nyaatree--nerd-icons-icon-for-dir-with-chevron (directory-file-name node-name) "right")))
-          (and (equal name 'leaf)  (insert (format "\t\t\t%s\t" (nerd-icons-icon-for-file node-name))))))
+          (and (equal name 'leaf)  (insert (format "\t\t\t%s\t" (nyaatree--nerd-icons-icon-for-file node-name))))))
      (t
       (or (and (equal name 'open)  (funcall n-insert-symbol "- "))
           (and (equal name 'close) (funcall n-insert-symbol "+ ")))))))
@@ -1354,7 +1381,7 @@ PATH is value."
    (generate-new-buffer-name nyaatree-buffer-name))
   (nyaatree-mode)
   ;; disable linum-mode
-  (when (and (boundp 'linum-mode)
+  (when (and (fboundp 'linum-mode)
              (not (null linum-mode)))
     (linum-mode -1))
   ;; Use inside helm window in NyaaTree

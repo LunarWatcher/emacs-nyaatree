@@ -9,6 +9,7 @@
 ### Fixed
 
 * `nyaatree-rename` will no longer fail in version-controlled folders when the buffer being renamed is opened.
+* `fboundp` all the things so the compiler shuts up
 
 ## v0.6.0
 
