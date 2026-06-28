@@ -667,13 +667,7 @@ The car of the pair will store fullpath, and cdr will store line number.")
      (setq-local mode-line-format nyaatree-mode-line-custom-format)
      (add-hook 'post-command-hook 'force-mode-line-update nil t))
     (_ nil))
-  ;; fix for electric-indent-mode
-  ;; for emacs 24.4
-  (if (fboundp 'electric-indent-local-mode)
-      (electric-indent-local-mode -1)
-    ;; for emacs 24.3 or less
-    (add-hook 'electric-indent-functions
-              (lambda (arg) 'no-indent) nil 'local))
+  (electric-indent-local-mode -1)
   (when nyaatree-auto-indent-point
     (add-hook 'post-command-hook 'nyaatree-hook--node-first-letter nil t)))
 

@@ -14,6 +14,7 @@ Note that this section does not replace the changelog. This is meant as a summar
   * `neotree` -> `nyaatree`, including in all commands.
   * `neo` -> `nyaatree`, including in all variables.
   * **This affects themes**. I do not currently know how to alias `nyaatree-*-face` to `neo-*-face` by default
+* Support for emacs 29.0 and older has been dropped. I don't know what the minimum supported version actually is, but I'm theoretically aiming for 29.1 and newer.
 
 ## Screenshots
 
