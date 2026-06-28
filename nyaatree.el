@@ -1,4 +1,4 @@
-;;; nyaatree.el --- A tree plugin like NerdTree for Vim
+;;; nyaatree.el --- A tree plugin like NerdTree for Vim --- -*- lexical-binding: nil -*- 
 
 ;; Copyright (C) 2014 jaypei
 ;; Copyright (C) 2026 Olivia
@@ -188,7 +188,8 @@ window."
   :group 'nyaatree)
 
 (defcustom nyaatree-reset-size-on-open nil
-  "*If non-nil, the width of the noetree window will be reseted every time a file is open."
+  "*If non-nil, the width of the noetree window will be reseted every time a
+ file is open."
   :type 'boolean
   :group 'nyaatree)
 
@@ -210,7 +211,7 @@ it suitable for terminal.
                  (const nerd)))
 
 (defcustom nyaatree-mode-line-type 'nyaatree
-  "*The mode-line type to display, `default' is a non-modified mode-line, \
+  "*The mode-line type to display, `default' is a non-modified mode-line,
 `nyaatree' is a compact mode-line that shows useful information about the
  current node like the parent directory and the number of nodes,
 `custom' uses the format stored in `nyaatree-mode-line-custom-format',
@@ -222,13 +223,14 @@ it suitable for terminal.
                  (const none)))
 
 (defcustom nyaatree-mode-line-custom-format nil
-  "*If `nyaatree-mode-line-type' is set to `custom', this variable specifiy \
+  "*If `nyaatree-mode-line-type' is set to `custom', this variable specifies
 the mode-line format."
   :type 'sexp
   :group 'nyaatree)
 
 (defcustom nyaatree-smart-open nil
-  "*If non-nil, every time when the nyaatree window is opened, it will try to find current file and jump to node."
+  "*If non-nil, every time when the nyaatree window is opened, it will try to
+find current file and jump to node."
   :type 'boolean
   :group 'nyaatree)
 
@@ -248,7 +250,8 @@ the mode-line format."
   :group 'nyaatree)
 
 (defcustom nyaatree-window-fixed-size t
-  "*If the nyaatree windows is fixed, it won't be resize when rebalance windows."
+  "*If the nyaatree windows is fixed, it won't be resize when rebalance
+windows."
   :type 'boolean
   :group 'nyaatree)
 
@@ -274,7 +277,8 @@ width (including the indent) larger than `nyaatree-window-width', and
                  (const none)))
 
 (defcustom nyaatree-click-changes-root nil
-  "*If non-nil, clicking on a directory will change the current root to the directory."
+  "*If non-nil, clicking on a directory will change the current root to the
+directory."
   :type 'boolean
   :group 'nyaatree)
 
@@ -327,7 +331,8 @@ This variable is used in `nyaatree-vc-for-node' when
                 :value-type character))
 
 (defcustom nyaatree-confirm-change-root 'yes-or-no-p
-  "Confirmation asking for permission to change root if file was not found in root path."
+  "Confirmation asking for permission to change root if file was not found in
+root path."
   :type '(choice (function-item :tag "Verbose" yes-or-no-p)
                  (function-item :tag "Succinct" y-or-n-p)
                  (function-item :tag "Off" off-p))
@@ -362,7 +367,8 @@ This variable is used in `nyaatree-vc-for-node' when
   :group 'nyaatree-confirmations)
 
 (defcustom nyaatree-confirm-kill-buffers-for-files-in-directory 'yes-or-no-p
-  "Confirmation asking whether *NyaaTree* should kill buffers for the directory in question."
+  "Confirmation asking whether *NyaaTree* should kill buffers for the directory
+in question."
   :type '(choice (function-item :tag "Verbose" yes-or-no-p)
                  (function-item :tag "Succinct" y-or-n-p)
                  (function-item :tag "Off" off-p))
@@ -877,46 +883,24 @@ The description of ARG is in `nyaatree-enter'."
 ;; Advices
 ;;
 
-(defadvice mouse-drag-vertical-line
-    (around nyaatree-drag-vertical-line (start-event) activate)
+(define-advice mouse-drag-vertical-line
+    (:around (orig-fun start-event) nyaatree-drag-vertical-line)
   "Drag and drop is not affected by the lock."
   (nyaatree-buffer--with-resizable-window
-   ad-do-it))
+   (funcall orig-fun start-event)))
 
-(defadvice balance-windows
-    (around nyaatree-balance-windows activate)
+(define-advice balance-windows
+    (:around (orig-fun) nyaatree-balance-windows)
   "Fix nyaatree inhibits balance-windows."
   (if (nyaatree-global--window-exists-p)
       (let (old-width)
         (nyaatree-global--with-window
           (setq old-width (window-width)))
         (nyaatree-buffer--with-resizable-window
-         ad-do-it)
+         (funcall orig-fun))
         (nyaatree-global--with-window
           (nyaatree-global--set-window-width old-width)))
-    ad-do-it))
-
-(eval-after-load 'popwin
-  '(progn
-     (defadvice popwin:create-popup-window
-         (around nyaatree/popwin-popup-buffer activate)
-       (let ((nyaatree-exists-p (nyaatree-global--window-exists-p)))
-         (when nyaatree-exists-p
-           (nyaatree-global--detach))
-         ad-do-it
-         (when nyaatree-exists-p
-           (nyaatree-global--attach)
-           (nyaatree-global--reset-width))))
-
-     (defadvice popwin:close-popup-window
-         (around nyaatree/popwin-close-popup-window activate)
-       (let ((nyaatree-exists-p (nyaatree-global--window-exists-p)))
-         (when nyaatree-exists-p
-           (nyaatree-global--detach))
-         ad-do-it
-         (when nyaatree-exists-p
-           (nyaatree-global--attach)
-           (nyaatree-global--reset-width))))))
+    (funcall orig-fun)))
 
 ;;
 ;; Hooks
@@ -936,7 +920,7 @@ The description of ARG is in `nyaatree-enter'."
   "Apply CONDP to elements of LST keeping those that return non-nil.
 
 Example:
-    (nyaatree-util--filter 'symbolp '(a \"b\" 3 d4))
+    (nyaatree-util--filter \='symbolp \='(a \"b\" 3 d4))
          => (a d4)
 
 This procedure does not work when CONDP is the `null' function."
@@ -952,7 +936,7 @@ This procedure does not work when CONDP is the `null' function."
     nil))
 
 (defun nyaatree-util--make-printable-string (string)
-  "Strip newline character from STRING, like 'Icon\n'."
+  "Strip newline character from STRING, like `Icon\n'."
   (replace-regexp-in-string "\n" "" string))
 
 (defun nyaatree-util--walk-dir (path)
@@ -961,12 +945,12 @@ This procedure does not work when CONDP is the `null' function."
     (condition-case nil
         (directory-files
          path 'full directory-files-no-dot-files-regexp)
-      ('file-error
+      (file-error
        (message "Walk directory %S failed." path)
        nil))))
 
 (defun nyaatree-util--hidden-path-filter (node)
-  "A filter function, if the NODE can not match each item in \
+  "A filter function, if the NODE can not match each item in
 `nyaatree-hidden-regexp-list', return t."
   (if (not nyaatree-buffer--show-hidden-file-p)
       (let ((shortname (nyaatree-path--file-short-name node)))
@@ -1019,7 +1003,7 @@ the last folder (the current one)."
    'nyaatree-full-path path))
 
 (defun nyaatree-path--insert-header-buttonized (path)
-  "Shortens the PATH to (window-body-width) and displays any \
+  "Shortens the PATH to (window-body-width) and displays any
 visible remains as buttons that, when clicked, navigate to that
 parent directory."
   (let* ((dirs (reverse (cl-maplist 'identity (reverse (split-string path "/" :omitnulls)))))
@@ -1035,7 +1019,7 @@ parent directory."
   ;;shorten the line if need be
   (when (> (current-column) (window-body-width))
     (forward-char (- (window-body-width)))
-    (delete-region (point-at-bol) (point))
+    (delete-region (line-beginning-position) (point))
     (let* ((button (button-at (point)))
            (path (if button (overlay-get button 'nyaatree-full-path) "/")))
       (nyaatree-path--insert-chroot-button "<" path 'nyaatree-root-dir-face))
@@ -1305,7 +1289,8 @@ Optional NODE-NAME is used for the `icons' theme"
 
 (defun nyaatree-buffer--save-cursor-pos (&optional node-path line-pos)
   "Save cursor position.
-If NODE-PATH and LINE-POS is nil, it will be save the current line node position."
+If NODE-PATH and LINE-POS is nil, it will be save the current line node
+position."
   (let ((cur-node-path nil)
         (cur-line-pos nil)
         (ws-wind (selected-window))
@@ -1380,10 +1365,6 @@ PATH is value."
   (switch-to-buffer
    (generate-new-buffer-name nyaatree-buffer-name))
   (nyaatree-mode)
-  ;; disable linum-mode
-  (when (and (fboundp 'linum-mode)
-             (not (null linum-mode)))
-    (linum-mode -1))
   ;; Use inside helm window in NyaaTree
   ;; Refs https://github.com/jaypei/emacs-nyaatree/issues/226
   (setq-local helm-split-window-inside-p t)
@@ -1786,7 +1767,7 @@ NyaaTree buffer is BUFFER."
 
 (defun nyaatree-window--zoom (method)
   "Zoom the NyaaTree window, the METHOD should one of these options:
-'maximize 'minimize 'zoom-in 'zoom-out."
+\='maximize \='minimize \='zoom-in \='zoom-out."
   (nyaatree-buffer--unlock-width)
   (cond
    ((eq method 'maximize)
@@ -2125,12 +2106,13 @@ If the current node is the first node then the last node is selected."
       (nyaatree-window--zoom 'minimize))))
 
 (defun nyaatree-collapse-all ()
-  (interactive)
   "Collapse all expanded folders in the nyaatree buffer"
-  (setq list-of-expanded-folders nyaatree-buffer--expanded-node-list)
-  (dolist (folder list-of-expanded-folders)
-    (nyaatree-buffer--toggle-expand folder)
-    (nyaatree-buffer--refresh t)
+  (interactive)
+  (let (list-of-expanded-folders nyaatree-buffer--expanded-node-list)
+    (dolist (folder list-of-expanded-folders)
+      (nyaatree-buffer--toggle-expand folder)
+      (nyaatree-buffer--refresh t)
+      )
     )
   )
 ;;;###autoload
@@ -2138,7 +2120,7 @@ If the current node is the first node then the last node is selected."
   "Integration with `Projectile'.
 
 Usage:
-    (setq projectile-switch-project-action 'nyaatree-projectile-action).
+    (setq projectile-switch-project-action \='nyaatree-projectile-action).
 
 When running `projectile-switch-project' (C-c p p), `nyaatree' will change root
 automatically."
@@ -2229,19 +2211,21 @@ ARG are the same as `nyaatree-open-file'."
   (nyaatree-buffer--execute nil 'nyaatree-open-file-horizontal-split 'nyaatree-open-dir))
 
 (defun nyaatree-enter-ace-window ()
-  "NyaaTree open event, file node will be opened in window chosen by ace-window."
+  "NyaaTree open event, file node will be opened in window chosen by
+ace-window."
   (interactive)
   (nyaatree-buffer--execute nil 'nyaatree-open-file-ace-window 'nyaatree-open-dir))
 
 (defun nyaatree-copy-filepath-to-yank-ring ()
-  "Nyaatree convenience interactive function: file node path will be added to the kill ring."
+  "Nyaatree convenience interactive function: file node path will be added to
+the kill ring."
   (interactive)
   (kill-new (nyaatree-buffer--get-filename-current-line)))
 
 (defun nyaatree-split-window-sensibly (&optional window)
   "An nyaatree-version of split-window-sensibly,
 which is used to fix issue #209.
-(setq split-window-preferred-function 'nyaatree-split-window-sensibly)"
+(setq split-window-preferred-function \='nyaatree-split-window-sensibly)"
   (let ((window (or window (selected-window))))
     (or (split-window-sensibly window)
         (and (get-buffer-window nyaatree-buffer-name)
